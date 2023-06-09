@@ -48,6 +48,11 @@ const requireAuth = async (req, res, next) => {
     }
 }
 
+const generateRandomId = () =>{
+    let id = (Math.random() + 1).toString(36);
+    return id.substring(2);
+}
+
 app.use(cors());
 app.use(express.json())
 
@@ -83,62 +88,61 @@ app.post('/login', async (req, res)=>{
     });
 })
 
-app.get('/users', requireAuth, (req, res) =>{
-    const data = ref(db, 'users/');
+app.get('/appointments', requireAuth, (req, res) =>{
+    const data = ref(db, 'appointments/');
     onValue(data, (snapshot)=>{
         const d = snapshot.val();
         res.send(d);
     })
 })
 
-app.post('/users', requireAuth, (req, res) =>{
-    const body = req.body;
+app.post('/appointments', requireAuth, (req, res) =>{
+    const id = generateRandomId();
+    const firstName = req.body["first name"];
+    const lastName = req.body["last name"];
+    const date = req.body["date"];
+    const time  = req.body["time"];
 
-    const id = Object.keys(body)[0];
-    const firstName = req.body[id]["first name"];
-    const lastName = req.body[id]["last name"];
-
-    const data = {"first name": firstName, "last name": lastName};
+    const data = {"first name": firstName, "last name": lastName, "date": date, "time": time};
 
     const jsonObject = {};
     jsonObject[id] = data;
     console.log(jsonObject);
 
-    update(ref(db, 'users/'), jsonObject);
-    res.send(body);
+    update(ref(db, 'appointments/'), jsonObject);
+    res.send(jsonObject);
 })
 
-app.get('/users/:userID', requireAuth, async(req, res) =>{
-    const userID = req.params['userID'];
-    const dataRef = ref(db, 'users/');
+app.get('/appointments/:id', requireAuth, async(req, res) =>{
+    const appointmentID = req.params['id'];
+    const dataRef = ref(db, 'appointments/');
 
-    var userData = "";
+    var appointmentData = "";
 
     onValue(dataRef, (snapshot)=>{
         const data = snapshot.val();
         const IDs = Object.keys(data);
         IDs.forEach((id, index)=>{
-            if(id==userID){
-                userData = data[id];
-                res.send(userData);
+            if(id==appointmentID){
+                appointmentData = data[id];
+                res.send(appointmentData);
             }
         })
     })
 })
 
-app.put('/users/:userID', requireAuth, (req, res)=>{
-    const userID = req.params['userID'];
+app.put('/appointments/:id', requireAuth, (req, res)=>{
+    const appointmentID = req.params['id'];
 
     const body = req.body;
     console.log(body);
-    update(ref(db, 'users/'+userID), body);
+    update(ref(db, 'appointments/'+appointmentID), body);
     res.send(body);
 })
 
-app.delete('/users/:userID', requireAuth, (req, res)=>{
-    const userID = req.params['userID'];
-    const dataRef = ref(db, 'users/'+userID);
+app.delete('/appointments/:id', requireAuth, (req, res)=>{
+    const appointmentID = req.params['id'];
 
-    set(ref(db, 'users/'+userID), null);
-    res.send("User with userID: "+userID+" removed");
+    set(ref(db, 'appointments/'+appointmentID), null);
+    res.send("User with userID: "+appointmentID+" removed");
 })
