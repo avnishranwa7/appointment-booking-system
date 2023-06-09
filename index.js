@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const firebaseConfig = require('./firebase-config.js');
 
 const app = express();
 const port = 5000;
@@ -10,17 +11,6 @@ const serviceAccount = require("./serviceAccountKey.json");
 const { initializeApp } = require('firebase/app');
 const { getDatabase, ref, onValue, set, update } = require('firebase/database');
 const { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } = require('firebase/auth');
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAu2qKqPjkarTbBufPzqPgItV-8620TGCU",
-    authDomain: "appointment-booking-syst-de40a.firebaseapp.com",
-    databaseURL: "https://appointment-booking-syst-de40a-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "appointment-booking-syst-de40a",
-    storageBucket: "appointment-booking-syst-de40a.appspot.com",
-    messagingSenderId: "666888361731",
-    appId: "1:666888361731:web:62917b3f702e2bc2dcfb36",
-    measurementId: "G-HKFYY3ERRT"
-};
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
