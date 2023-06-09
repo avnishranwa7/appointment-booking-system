@@ -20,3 +20,7 @@ Each appointment contains the following fields:
 * Time
 
 ![Screenshot of Firebase Realtime Database Schema](https://github.com/avnishranwa7/appointment-booking-system/blob/main/Appointment-Schema.png)
+
+## Technology Stack
+* Express.js
+* Google Firebase (Realtime Database, Firebase Admin SDK, Authentication)
